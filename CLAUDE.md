@@ -20,11 +20,25 @@ kommit-backend/
 │   └── settings.json
 ├── docs/
 │   └── TECH.md
+├── src/
+│   ├── config/
+│   │   └── index.ts
+│   ├── controllers/
+│   │   └── rootController.ts
+│   ├── routes/
+│   │   ├── index.ts
+│   │   └── rootRoutes.ts
+│   ├── services/
+│   │   └── root/
+│   │       └── rootService.ts
+│   ├── app.ts
+│   └── index.ts
 ├── .gitignore
 ├── CLAUDE.md
 ├── package.json
 ├── pnpm-lock.yaml
-└── pnpm-workspace.yaml
+├── pnpm-workspace.yaml
+└── tsconfig.json
 ```
 
 Mets à jour ce fichier (surtout l'arborescence) à chaque modification du projet.
