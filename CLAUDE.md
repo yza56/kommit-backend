@@ -24,11 +24,15 @@ kommit-backend/
 │   ├── config/
 │   │   └── index.ts
 │   ├── controllers/
+│   │   ├── healthController.ts
 │   │   └── rootController.ts
 │   ├── routes/
+│   │   ├── healthRoutes.ts
 │   │   ├── index.ts
 │   │   └── rootRoutes.ts
 │   ├── services/
+│   │   ├── health/
+│   │   │   └── healthService.ts
 │   │   └── root/
 │   │       └── rootService.ts
 │   ├── app.ts
