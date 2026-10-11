@@ -18,6 +18,13 @@ kommit-backend/
 │       └── .gitkeep
 ├── .vscode/
 │   └── settings.json
+├── docs/
+│   └── TECH.md
 ├── .gitignore
-└── CLAUDE.md
+├── CLAUDE.md
+├── package.json
+├── pnpm-lock.yaml
+└── pnpm-workspace.yaml
 ```
+
+Mets à jour ce fichier (surtout l'arborescence) à chaque modification du projet.
