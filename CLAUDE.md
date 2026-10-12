@@ -20,12 +20,17 @@ kommit-backend/
 │   └── settings.json
 ├── docs/
 │   └── TECH.md
+├── prisma/
+│   └── schema.prisma
 ├── src/
 │   ├── config/
 │   │   └── index.ts
 │   ├── controllers/
 │   │   ├── healthController.ts
 │   │   └── rootController.ts
+│   ├── repositories/
+│   │   ├── generated/       # client Prisma généré (ignoré par git)
+│   │   └── prisma.ts
 │   ├── routes/
 │   │   ├── healthRoutes.ts
 │   │   ├── index.ts
@@ -37,11 +42,13 @@ kommit-backend/
 │   │       └── rootService.ts
 │   ├── app.ts
 │   └── index.ts
+├── .env.example
 ├── .gitignore
 ├── CLAUDE.md
 ├── package.json
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
+├── prisma.config.ts
 └── tsconfig.json
 ```
 
