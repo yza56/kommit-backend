@@ -29,6 +29,8 @@ kommit-backend/
 │   │   ├── dbHealthController.ts
 │   │   ├── healthController.ts
 │   │   └── rootController.ts
+│   ├── middlewares/
+│   │   └── corsMiddleware.ts
 │   ├── repositories/
 │   │   ├── dbHealthRepository.ts
 │   │   ├── generated/       # client Prisma généré (ignoré par git)

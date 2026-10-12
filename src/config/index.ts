@@ -15,4 +15,5 @@ export const config = {
   serviceName: packageJson.name,
   serviceVersion: packageJson.version,
   databaseUrl,
+  allowedOrigins: [5173, 5174, 5175, 5176].map((port) => `http://localhost:${port}`),
 }
