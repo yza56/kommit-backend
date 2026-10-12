@@ -26,16 +26,21 @@ kommit-backend/
 │   ├── config/
 │   │   └── index.ts
 │   ├── controllers/
+│   │   ├── dbHealthController.ts
 │   │   ├── healthController.ts
 │   │   └── rootController.ts
 │   ├── repositories/
+│   │   ├── dbHealthRepository.ts
 │   │   ├── generated/       # client Prisma généré (ignoré par git)
 │   │   └── prisma.ts
 │   ├── routes/
+│   │   ├── dbHealthRoutes.ts
 │   │   ├── healthRoutes.ts
 │   │   ├── index.ts
 │   │   └── rootRoutes.ts
 │   ├── services/
+│   │   ├── dbHealth/
+│   │   │   └── dbHealthService.ts
 │   │   ├── health/
 │   │   │   └── healthService.ts
 │   │   └── root/
