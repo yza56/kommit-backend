@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Hook Stop : lance le lint quand Claude a fini de répondre.
-# Si le lint échoue, le code de sortie 2 renvoie l'erreur à Claude, qui corrige.
+# Le code de sortie 2 renvoie l'erreur de lint à Claude, qui la corrige.
 
 input=$(cat)
 

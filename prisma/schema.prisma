@@ -7,7 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-// Tables de Better Auth (user, session, account, verification).
 model User {
   id            String    @id
   name          String
