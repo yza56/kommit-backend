@@ -7,6 +7,8 @@ Backend de Kommit : une API Node.js / TypeScript (Express).
 ```
 kommit-backend/
 ├── .claude/
+│   ├── hooks/
+│   │   └── lint.sh
 │   ├── rules/
 │   │   ├── architecture-backend.md
 │   │   ├── files.md
@@ -14,8 +16,9 @@ kommit-backend/
 │   │   ├── perimetre-backend.md
 │   │   ├── pnpm.md
 │   │   └── tests-arrange-act-assert.md
-│   └── skills/
-│       └── .gitkeep
+│   ├── skills/
+│   │   └── .gitkeep
+│   └── settings.json
 ├── .vscode/
 │   └── settings.json
 ├── docs/
