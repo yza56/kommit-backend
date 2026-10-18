@@ -14,6 +14,9 @@ export type AuthErrorCode =
    *  L'inscription révèle qu'un email est pris, la connexion ne révèle jamais rien :
    *  postures volontairement opposées, tranché le 2026-07-12. */
   | "INVALID_CREDENTIALS"
+  /** Route protégée appelée sans session → 401 (RM2). Permet à F2 de scoper
+   *  `GET /standups` par utilisateur. */
+  | "UNAUTHENTICATED"
 
 /** Erreurs du standup (F2). */
 export type StandupErrorCode =
