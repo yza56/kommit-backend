@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { PASSWORD_MIN_LENGTH, signUpSchema } from '@/services/auth/authValidation/authValidation.js'
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, signUpSchema } from '@/services/auth/authValidation/authValidation.js'
 
 const validSignUp = {
   name: 'Marc',
@@ -39,12 +39,24 @@ describe("Validation à l'inscription (schéma Zod unique)", () => {
       expect(parsedSignUp.data).toEqual({ ...validSignUp, password })
     })
 
-    it("n'impose aucun maximum au mot de passe", () => {
-      const veryLongPassword = 'a'.repeat(1000)
+    it('fixe le maximum du mot de passe à 128 caractères', () => {
+      expect(PASSWORD_MAX_LENGTH).toBe(128)
+    })
 
-      const parsedSignUp = signUpSchema.safeParse({ ...validSignUp, password: veryLongPassword })
+    it('accepte un mot de passe de 128 caractères pile', () => {
+      const password = 'a'.repeat(128)
 
-      expect(parsedSignUp.data).toEqual({ ...validSignUp, password: veryLongPassword })
+      const parsedSignUp = signUpSchema.safeParse({ ...validSignUp, password })
+
+      expect(parsedSignUp.data).toEqual({ ...validSignUp, password })
+    })
+
+    it('refuse un mot de passe de 129 caractères en citant le maximum de 128', () => {
+      const parsedSignUp = signUpSchema.safeParse({ ...validSignUp, password: 'a'.repeat(129) })
+
+      const passwordIssue = parsedSignUp.error?.issues.find((issue) => issue.path[0] === 'password')
+      expect(parsedSignUp.success).toBe(false)
+      expect(passwordIssue?.message ?? '').toMatch(/128/)
     })
 
     it("cite le minimum de 8 dans le message d'erreur du mot de passe", () => {

@@ -14,7 +14,7 @@
 
 | Règle | Ce qu'on vérifie | Testable unitaire ? | Pourquoi | Comment |
 |---|---|---|---|---|
-| RM10 | Email mal formé ou mot de passe < 8 caractères : refusé, aucun compte créé. Pas de maximum. | 🟠 | Le schéma Zod est du code à nous (unitaire : email invalide, 7 caractères refusé, 8 accepté, aucune borne haute). Reste le branchement réel du schéma sur `/sign-up/email` et l'absence de compte créé, que le test unitaire ne confirme pas. Le 8 doit aussi être identique dans la config Better Auth, l'indication affichée et le message d'erreur. | Unitaire (schéma) + smoke manuel : signup avec email mal formé, puis mot de passe de 7 caractères, vérifier le refus et qu'aucun compte n'existe |
+| RM10 | Email mal formé ou mot de passe < 8 caractères : refusé, aucun compte créé. Maximum de 128. | 🟠 | Le schéma Zod est du code à nous (unitaire : email invalide, 7 caractères refusé, 8 accepté, 128 accepté, 129 refusé). Reste le branchement réel du schéma sur `/sign-up/email` et l'absence de compte créé, que le test unitaire ne confirme pas. Le 8 doit aussi être identique dans la config Better Auth, l'indication affichée et le message d'erreur. | Unitaire (schéma) + smoke manuel : signup avec email mal formé, puis mot de passe de 7 caractères, vérifier le refus et qu'aucun compte n'existe |
 | RM11 | Signup sans prénom : refusé, aucun compte créé | 🟢 | Validation Zod pure sur le champ `name`. Le branchement du schéma sur la route est déjà couvert par le smoke de RM10. | Unitaire, test-first |
 | RM20 | Prénom d'espaces seulement : refusé exactement comme RM11 | 🟢 | Le `trim` du schéma Zod ramène le prénom à vide, puis même refus que RM11 (même code d'erreur, même message). | Unitaire, test-first |
 

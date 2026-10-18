@@ -181,7 +181,7 @@ curl -i -X POST "$AUTH_URL/sign-in/email" \
 
 - Étapes 1 et 2 : 4xx (jamais 5xx), corps `{ "code": "VALIDATION_ERROR", "message": "<français>" }`, pas de `Set-Cookie`. Le message de l'étape 2 cite 8 caractères.
 - Étape 3 : refus `INVALID_CREDENTIALS` (le compte n'existe pas).
-- Variante rapide : refaire l'étape 2 avec 8 caractères (`12345678`) doit être accepté (200). Pas de maximum : un mot de passe de 200 caractères est accepté aussi.
+- Variante rapide : refaire l'étape 2 avec 8 caractères (`12345678`) doit être accepté (200). Le maximum est de 128 : un mot de passe de 128 caractères est accepté, un de 129 est refusé en `VALIDATION_ERROR` (message citant 128), jamais en `INTERNAL_ERROR`.
 
 - [ ] RM10 exécuté et conforme
 
