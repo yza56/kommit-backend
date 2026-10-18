@@ -1,11 +1,12 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { fromNodeHeaders } from 'better-auth/node'
+import type { IncomingHttpHeaders } from 'node:http'
 
 import { config } from '@/config/index.js'
 import { prisma } from '@/repositories/prisma.js'
 import { PASSWORD_MIN_LENGTH } from '@/services/auth/authValidation/authValidation.js'
-import type { SessionReader } from '@/middlewares/requireSession/requireSession.js'
+import type { Session } from '@/types/apiContract.js'
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: 'postgresql' }),
@@ -18,7 +19,7 @@ export const auth = betterAuth({
   },
 })
 
-export const readSession: SessionReader = async (headers) => {
+export const readSession = async (headers: IncomingHttpHeaders): Promise<Session> => {
   const session = await auth.api.getSession({ headers: fromNodeHeaders(headers) })
 
   if (!session) return null

@@ -28,10 +28,8 @@ const betterAuthCode = (error: unknown): unknown =>
     ? (error.body as { code?: unknown }).code
     : undefined
 
-export const toApiError = (error: unknown): ApiError => {
-  if (isPrismaUniqueViolation(error)) return { ...EMAIL_ALREADY_EXISTS }
-
-  switch (betterAuthCode(error)) {
+const fromBetterAuthCode = (code: unknown): ApiError => {
+  switch (code) {
     case 'USER_ALREADY_EXISTS':
     case 'USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL':
       return { ...EMAIL_ALREADY_EXISTS }
@@ -41,6 +39,24 @@ export const toApiError = (error: unknown): ApiError => {
       return { ...INTERNAL_ERROR }
   }
 }
+
+export const toApiError = (error: unknown): ApiError => {
+  if (isPrismaUniqueViolation(error)) return { ...EMAIL_ALREADY_EXISTS }
+
+  return fromBetterAuthCode(betterAuthCode(error))
+}
+
+const HTTP_STATUS_BY_CODE: Partial<Record<ApiError['code'], number>> = {
+  VALIDATION_ERROR: 400,
+  INVALID_CREDENTIALS: 401,
+  UNAUTHENTICATED: 401,
+  EMAIL_ALREADY_EXISTS: 422,
+}
+
+export const toHttpStatus = (apiError: ApiError): number => HTTP_STATUS_BY_CODE[apiError.code] ?? 500
+
+export const betterAuthResponseToApiError = (body: { code?: unknown }): ApiError =>
+  fromBetterAuthCode(body.code)
 
 export const validationErrorToApiError = (error: ZodError): ApiError => ({
   code: 'VALIDATION_ERROR',

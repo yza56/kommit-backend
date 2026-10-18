@@ -12,6 +12,7 @@ kommit-backend/
 │   │   └── lint.sh
 │   ├── rules/
 │   │   ├── architecture-backend.md
+│   │   ├── commentaires.md
 │   │   ├── files.md
 │   │   ├── imports.md
 │   │   ├── perimetre-backend.md
@@ -38,11 +39,17 @@ kommit-backend/
 │   │   └── rootController.ts
 │   ├── middlewares/
 │   │   ├── corsMiddleware.ts
-│   │   └── requireSession/
-│   │       ├── requireSession.ts
-│   │       └── requireSession.test.ts
+│   │   ├── errorHandler/
+│   │   │   ├── errorHandler.ts
+│   │   │   └── errorHandler.test.ts
+│   │   ├── requireSession/
+│   │   │   ├── requireSession.ts
+│   │   │   └── requireSession.test.ts
+│   │   └── validateBody/
+│   │       ├── validateBody.ts
+│   │       └── validateBody.test.ts
 │   ├── repositories/
-│   │   ├── auth.ts
+│   │   ├── authRepository.ts
 │   │   ├── dbHealthRepository.ts
 │   │   ├── generated/       # client Prisma généré (ignoré par git)
 │   │   └── prisma.ts

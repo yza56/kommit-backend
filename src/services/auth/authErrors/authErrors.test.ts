@@ -3,7 +3,12 @@ import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
 import { PrismaClientKnownRequestError } from '@/repositories/generated/prisma/internal/prismaNamespace.js'
-import { toApiError, validationErrorToApiError } from '@/services/auth/authErrors/authErrors.js'
+import {
+  betterAuthResponseToApiError,
+  toApiError,
+  toHttpStatus,
+  validationErrorToApiError,
+} from '@/services/auth/authErrors/authErrors.js'
 
 // Formes constatées dans le code source de better-auth 1.7.10 (@better-auth/core, better-call) :
 // APIError.from(status, { code, message }) donne error.body = { code, message }.
@@ -113,6 +118,44 @@ describe('Erreurs et pannes', () => {
 
       expect(Object.keys(apiError).sort()).toEqual(['code', 'message'])
       expect(apiError.message).toMatch(/\S/)
+    })
+  })
+
+  describe("Corps d'une réponse HTTP de Better Auth", () => {
+    it.each([
+      ['USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL', 'EMAIL_ALREADY_EXISTS'],
+      ['INVALID_EMAIL_OR_PASSWORD', 'INVALID_CREDENTIALS'],
+      ['SOMETHING_NEW', 'INTERNAL_ERROR'],
+    ])('ré-emballe le code %s en %s', (betterAuthCode, expectedCode) => {
+      const apiError = betterAuthResponseToApiError({ code: betterAuthCode })
+
+      expect(apiError.code).toBe(expectedCode)
+    })
+
+    it('ressort en INTERNAL_ERROR quand le corps ne porte pas de code', () => {
+      expect(betterAuthResponseToApiError({}).code).toBe('INTERNAL_ERROR')
+    })
+  })
+
+  describe('Statut HTTP déduit du code', () => {
+    it.each([
+      ['VALIDATION_ERROR', 400],
+      ['INVALID_CREDENTIALS', 401],
+      ['UNAUTHENTICATED', 401],
+      ['EMAIL_ALREADY_EXISTS', 422],
+      ['INTERNAL_ERROR', 500],
+    ] as const)('%s donne le statut %i', (code, expectedStatus) => {
+      expect(toHttpStatus({ code, message: 'x' })).toBe(expectedStatus)
+    })
+
+    it('donne un statut métier à une violation UNIQUE de Prisma, jamais 500', () => {
+      expect(toHttpStatus(toApiError(prismaUniqueViolation()))).toBe(422)
+    })
+
+    it('donne 500 à une erreur non reconnue de Better Auth, même si son statut d\'origine était 4xx', () => {
+      const unknownClientError = APIError.from('TOO_MANY_REQUESTS', { code: 'RATE_LIMITED', message: 'Too many' })
+
+      expect(toHttpStatus(toApiError(unknownClientError))).toBe(500)
     })
   })
 

@@ -1,11 +1,12 @@
-import { APIError } from 'better-auth/api'
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 
-import { auth } from '@/repositories/auth.js'
-import { toApiError, validationErrorToApiError } from '@/services/auth/authErrors/authErrors.js'
-import { signUpSchema } from '@/services/auth/authValidation/authValidation.js'
-
-const SIGN_UP_PATH = '/sign-up/email'
+import { auth } from '@/repositories/authRepository.js'
+import {
+  betterAuthResponseToApiError,
+  toApiError,
+  toHttpStatus,
+} from '@/services/auth/authErrors/authErrors.js'
+import type { ApiError } from '@/types/apiContract.js'
 
 const toWebRequest = (req: ExpressRequest, body: unknown): Request => {
   const headers = new Headers()
@@ -25,20 +26,28 @@ const toWebRequest = (req: ExpressRequest, body: unknown): Request => {
   })
 }
 
-const readErrorBody = async (response: Response): Promise<{ code: string; message: string }> => {
+const readErrorBody = async (response: Response): Promise<{ code?: unknown }> => {
   try {
-    const { code, message } = (await response.json()) as { code?: unknown; message?: unknown }
-    return { code: String(code ?? ''), message: String(message ?? '') }
+    return (await response.json()) as { code?: unknown }
   } catch {
-    return { code: '', message: '' }
+    return {}
   }
+}
+
+const sendApiError = (res: ExpressResponse, apiError: ApiError): void => {
+  res.status(toHttpStatus(apiError)).json(apiError)
 }
 
 const sendBetterAuthResponse = async (res: ExpressResponse, response: Response): Promise<void> => {
   if (response.status >= 400) {
     const body = await readErrorBody(response)
-    // toApiError ne lit que body.code : le statut passé ici n'a pas d'effet, le vrai est repris pour la réponse.
-    res.status(response.status).json(toApiError(APIError.from('BAD_REQUEST', body)))
+    const apiError = betterAuthResponseToApiError(body)
+
+    if (apiError.code === 'INTERNAL_ERROR') {
+      console.error(`Réponse Better Auth non reconnue (${response.status})`, body)
+    }
+
+    sendApiError(res, apiError)
     return
   }
 
@@ -52,21 +61,11 @@ const sendBetterAuthResponse = async (res: ExpressResponse, response: Response):
 
 export const authHandler = async (req: ExpressRequest, res: ExpressResponse): Promise<void> => {
   try {
-    let body: unknown = req.body
-
-    if (req.method === 'POST' && req.path === SIGN_UP_PATH) {
-      const parsedSignUp = signUpSchema.safeParse(body)
-
-      if (!parsedSignUp.success) {
-        res.status(400).json(validationErrorToApiError(parsedSignUp.error))
-        return
-      }
-
-      body = parsedSignUp.data
-    }
+    const body = res.locals.body ?? req.body
 
     await sendBetterAuthResponse(res, await auth.handler(toWebRequest(req, body)))
   } catch (error) {
-    res.status(500).json(toApiError(error))
+    console.error('Erreur dans authHandler', error)
+    sendApiError(res, toApiError(error))
   }
 }
