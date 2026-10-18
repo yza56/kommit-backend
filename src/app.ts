@@ -6,4 +6,5 @@ import { routes } from '@/routes/index.js'
 export const app = express()
 
 app.use(corsMiddleware)
+app.use(express.json())
 app.use(routes)
