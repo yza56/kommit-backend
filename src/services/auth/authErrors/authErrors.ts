@@ -34,6 +34,7 @@ const fromBetterAuthCode = (code: unknown): ApiError => {
     case 'USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL':
       return { ...EMAIL_ALREADY_EXISTS }
     case 'INVALID_EMAIL_OR_PASSWORD':
+    case 'INVALID_EMAIL':
       return { ...INVALID_CREDENTIALS }
     default:
       return { ...INTERNAL_ERROR }

@@ -125,6 +125,7 @@ describe('Erreurs et pannes', () => {
     it.each([
       ['USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL', 'EMAIL_ALREADY_EXISTS'],
       ['INVALID_EMAIL_OR_PASSWORD', 'INVALID_CREDENTIALS'],
+      ['INVALID_EMAIL', 'INVALID_CREDENTIALS'],
       ['SOMETHING_NEW', 'INTERNAL_ERROR'],
     ])('ré-emballe le code %s en %s', (betterAuthCode, expectedCode) => {
       const apiError = betterAuthResponseToApiError({ code: betterAuthCode })
