@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, signUpSchema } from '@/services/auth/authValidation/authValidation.js'
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, signInSchema, signUpSchema } from '@/services/auth/authValidation/authValidation.js'
 
 const validSignUp = {
   name: 'Marc',
@@ -156,5 +156,30 @@ describe("Unicité de l'email", () => {
 
       expect(parsedSignUp.data?.email).toBe('marc@x.com')
     })
+  })
+})
+
+describe('Validation à la connexion (RM13 : aucun format vérifié)', () => {
+  it('accepte un email mal formé et un mot de passe court', () => {
+    const malformedSignIn = { email: 'pas-un-email', password: 'abc' }
+
+    const parsedSignIn = signInSchema.safeParse(malformedSignIn)
+
+    expect(parsedSignIn.data).toEqual(malformedSignIn)
+  })
+
+  it('accepte un mot de passe vide', () => {
+    const signInWithoutPassword = { email: 'marc@x.com', password: '' }
+
+    expect(signInSchema.safeParse(signInWithoutPassword).success).toBe(true)
+  })
+
+  it.each([
+    ['un corps vide', {}],
+    ['un mot de passe absent', { email: 'marc@x.com' }],
+    ['un email absent', { password: 'motdepasse' }],
+    ['un email qui est un nombre', { email: 123, password: 'motdepasse' }],
+  ])('refuse %s', (_label, body) => {
+    expect(signInSchema.safeParse(body).success).toBe(false)
   })
 })
