@@ -21,3 +21,11 @@ export const signUpSchema = z.object({
     .min(PASSWORD_MIN_LENGTH, `Le mot de passe doit contenir au moins ${PASSWORD_MIN_LENGTH} caractères`)
     .max(PASSWORD_MAX_LENGTH, `Le mot de passe ne doit pas dépasser ${PASSWORD_MAX_LENGTH} caractères`),
 })
+
+const INVALID_CREDENTIALS_MESSAGE = 'Email ou mot de passe incorrect'
+
+// Aucun format vérifié à la connexion : un email ou un mot de passe faux donne toujours le même message (RM13).
+export const signInSchema = z.object({
+  email: z.string({ error: INVALID_CREDENTIALS_MESSAGE }),
+  password: z.string({ error: INVALID_CREDENTIALS_MESSAGE }),
+})
